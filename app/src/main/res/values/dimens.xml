@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="btn_textSize">30sp</dimen>
+    <dimen name="tv_textSize">50sp</dimen>
+    <dimen name="tv_padding">30dp</dimen>
+    <dimen name="tv_height">60dp</dimen>
+    <dimen name="btn_height">80dp</dimen>
+</resources>
