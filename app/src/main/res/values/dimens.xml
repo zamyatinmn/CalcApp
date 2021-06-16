@@ -5,4 +5,6 @@
     <dimen name="tv_padding">30dp</dimen>
     <dimen name="tv_height">60dp</dimen>
     <dimen name="btn_height">80dp</dimen>
+    <dimen name="btn_radius">50dp</dimen>
+    <dimen name="btn_margin">5dp</dimen>
 </resources>
