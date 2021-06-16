@@ -19,5 +19,5 @@
     <string name="plus">+</string>
     <string name="dot">.</string>
     <string name="result">=</string>
-    <string name="dots">...</string>
+    <string name="dots">…</string>
 </resources>
