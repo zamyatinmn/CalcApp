@@ -2,8 +2,10 @@ package com.example.calc;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
@@ -38,13 +40,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button del;
     private Button clear;
     private final IPresenter presenter = new Presenter(this);
+    private boolean theme = true;
+    private final String PREFS_KEY = "prefs";
+    private final String NIGHT_MODE_KEY = "mode";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        theme = getSharedPreferences(PREFS_KEY, MODE_PRIVATE).getBoolean(NIGHT_MODE_KEY, true);
+        if (theme){
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }
         setContentView(R.layout.activity_main);
         initViews();
         setListeners();
+        findViewById(R.id.view).setOnLongClickListener(v -> {
+            SharedPreferences prefs = getSharedPreferences(PREFS_KEY, MODE_PRIVATE);
+            prefs.edit().putBoolean(NIGHT_MODE_KEY, !theme).apply();
+            recreate();
+            return false;
+        });
     }
 
     @Override
