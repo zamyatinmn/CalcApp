@@ -10,6 +10,7 @@ public class Presenter implements IPresenter {
     private double val1 = Double.NaN;
     private double val2 = Double.NaN;
     private final IMainActivity a;
+    private String memory = null;
 
     public Presenter(IMainActivity activity) {
         this.a = activity;
@@ -155,6 +156,7 @@ public class Presenter implements IPresenter {
         return index == -1;
     }
 
+
     private void operation(String operation) {
         if (!Double.isNaN(val1)) {
             if (a.getBot().charAt(0) == '-') {
@@ -175,12 +177,16 @@ public class Presenter implements IPresenter {
                     val1 /= val2;
                     break;
                 case OPERATION_RESULT:
-
+                    if (memory != null)
+                        if (!memory.equals(OPERATION_RESULT)) {
+                            operation(memory);
+                        }
                     break;
             }
         } else {
             val1 = Double.parseDouble(a.getBot());
         }
+        memory = operation;
         a.setTop(String.valueOf(val1).concat(operation));
         a.setBot("0");
     }
