@@ -9,12 +9,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Calc">
-        <activity android:name=".Settings"></activity>
-        <activity android:name=".MainActivity">
+        <activity android:name=".testApplication">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".Settings" />
+        <activity android:name=".MainActivity" android:label="Calculator">
+            <intent-filter>
+                <action android:name="GoToCoolCalc"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
     </application>
