@@ -1,11 +1,18 @@
 package com.example.calc;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
@@ -39,29 +46,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button percent;
     private Button del;
     private Button clear;
+    private View background;
     private final IPresenter presenter = new Presenter(this);
-    private boolean theme = true;
+    private int theme;
     private final String PREFS_KEY = "prefs";
     private final String NIGHT_MODE_KEY = "mode";
+    private ActivityResultLauncher<Intent> launcher;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        theme = getSharedPreferences(PREFS_KEY, MODE_PRIVATE).getBoolean(NIGHT_MODE_KEY, true);
-        if (theme){
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        theme = getSharedPreferences(PREFS_KEY, MODE_PRIVATE).getInt(NIGHT_MODE_KEY, 1);
+        switch (theme) {
+            case Settings.LIGHT:
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                break;
+            case Settings.DARK:
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                break;
         }
         setContentView(R.layout.activity_main);
         initViews();
         setListeners();
-        findViewById(R.id.view).setOnLongClickListener(v -> {
-            SharedPreferences prefs = getSharedPreferences(PREFS_KEY, MODE_PRIVATE);
-            prefs.edit().putBoolean(NIGHT_MODE_KEY, !theme).apply();
-            recreate();
-            return false;
-        });
+
+        launcher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(), result -> {
+
+                    SharedPreferences prefs = getSharedPreferences(PREFS_KEY, MODE_PRIVATE);
+                    assert result.getData() != null;
+                    int resCode = result.getData().getExtras().getInt("mode");
+                    prefs.edit().putInt(NIGHT_MODE_KEY, resCode).apply();
+                    recreate();
+                });
     }
 
     @Override
@@ -106,6 +123,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         percent = findViewById(R.id.btnPercent);
         del = findViewById(R.id.btnDel);
         clear = findViewById(R.id.btnClear);
+        background = findViewById(R.id.view);
     }
 
     private void setListeners() {
@@ -128,6 +146,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         percent.setOnClickListener(this);
         del.setOnClickListener(this);
         clear.setOnClickListener(this);
+        background.setOnLongClickListener(v -> {
+            Intent intent = new Intent(this, Settings.class);
+            intent.putExtra("mode", theme);
+            launcher.launch(intent);
+            return false;
+        });
     }
 
     @SuppressLint("NonConstantResourceId")

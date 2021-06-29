@@ -20,4 +20,6 @@
     <string name="dot">.</string>
     <string name="result">=</string>
     <string name="dots">…</string>
+    <string name="light_theme">Light theme</string>
+    <string name="dark_theme">Dark theme</string>
 </resources>
