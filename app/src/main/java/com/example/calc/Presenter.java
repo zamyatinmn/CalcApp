@@ -5,6 +5,7 @@ public class Presenter implements IPresenter {
     private final String OPERATION_MINUS = "-";
     private final String OPERATION_MULTIPLY = "*";
     private final String OPERATION_DIVISION = "/";
+    private final String OPERATION_MODULUS = "%";
     private final String OPERATION_RESULT = "=";
 
     private double val1 = Double.NaN;
@@ -90,33 +91,54 @@ public class Presenter implements IPresenter {
 
     @Override
     public void plusClicked() {
+        if (memory != null){
+            operation(memory);
+        }
         operation(OPERATION_PLUS);
     }
 
     @Override
     public void minusClicked() {
+        if (memory != null){
+            operation(memory);
+        }
         operation(OPERATION_MINUS);
     }
 
     @Override
     public void divClicked() {
-        operation(OPERATION_DIVISION);
+        if (memory != null){
+            operation(memory);
+        }
+        memory = OPERATION_DIVISION;
+        a.setTop(String.valueOf(val1).concat(memory));
     }
 
     @Override
     public void mulClicked() {
-        operation(OPERATION_MULTIPLY);
+        if (memory != null){
+            operation(memory);
+        }
+        memory = OPERATION_MULTIPLY;
+        a.setTop(String.valueOf(val1).concat(memory));
     }
 
     @Override
     public void percentClicked() {
-
+        if (memory != null){
+            operation(memory);
+        }
+        memory = OPERATION_MODULUS;
+        a.setTop(String.valueOf(val1).concat(memory));
     }
 
     @Override
     public void delClicked() {
         if (a.getBot().length() > 0) {
             a.setBot(a.getBot().substring(0, a.getBot().length() - 1));
+            if (a.getBot().length() == 0){
+                a.setBot("0");
+            }
         }
     }
 
@@ -156,7 +178,6 @@ public class Presenter implements IPresenter {
         return index == -1;
     }
 
-
     private void operation(String operation) {
         if (!Double.isNaN(val1)) {
             if (a.getBot().charAt(0) == '-') {
@@ -175,6 +196,9 @@ public class Presenter implements IPresenter {
                     break;
                 case OPERATION_DIVISION:
                     val1 /= val2;
+                    break;
+                case OPERATION_MODULUS:
+                    val1 %= val2;
                     break;
                 case OPERATION_RESULT:
                     if (memory != null)
